@@ -1,4 +1,4 @@
-#!usr/bin/env python3
+#!/usr/bin/env python3
 import sys, traceback
 from requests import get
 from bs4 import BeautifulSoup
