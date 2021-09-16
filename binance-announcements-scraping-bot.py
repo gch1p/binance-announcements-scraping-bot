@@ -29,9 +29,12 @@ def scrap_announcements():
             if not link.get('id').startswith('supportList'):
                 continue
 
+            href = link.get('href')
+            if href.startswith('/'):
+                href = f'https://www.binance.com{href}'
             category_data['news'].append({
                 'text': link.text,
-                'link': link.get('href')
+                'link': href
             })
             total_news += 1
 
@@ -56,15 +59,14 @@ if __name__ == '__main__':
                     state['urls'].append(item['link'])
 
             if updates:
-                buf = f"<i>{category['title']}</i>\n"
-                buf += '\n'.join(list(map(lambda item: f"<a href=\"{item['link']}\">{item['text']}</a>", updates)))
+                buf = f"<b>{category['title']}</b>\n"
+                buf += '\n'.join(list(map(lambda item: f"<a href='{item['link']}'>{item['text']}</a>", updates)))
                 blocks.append(buf)
 
         if blocks:
             message = '<b>Binance Announcements</b>\n\n'
             message += '\n\n'.join(blocks)
-
-            telegram_notify(text=message, parse_mode='HTML')
+            telegram_notify(text=message, parse_mode='HTML', disable_web_page_preview=True)
 
     except:
         telegram_notify(text='error: ' + escape(traceback.format_exc()), parse_mode='HTML')
