@@ -1,8 +1,8 @@
-# Binance-Announcements
+# binance-announcements-scraping-bot
 
 Fork of https://github.com/darroyolpz/Binance-Announcements.
 
-- Fixed html layout parsing
+- Fixed html markup parsing
 - Removed discord
 - Added Telegram notifications
 
