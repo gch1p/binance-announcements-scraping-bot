@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-import sys, traceback
+import traceback
 from requests import get
 from bs4 import BeautifulSoup
 from ch1p import State, telegram_notify
 from html import escape
+from argparse import ArgumentParser
 
 
 def scrap_announcements():
@@ -23,10 +24,7 @@ def scrap_announcements():
         }
 
         for link in c.find_next('div').select('a[data-bn-type="link"]'):
-            id = link.get('id')
-            if id is None:
-                continue
-            if not link.get('id').startswith('supportList'):
+            if link.text.strip().lower() == 'view more':
                 continue
 
             href = link.get('href')
@@ -47,6 +45,10 @@ def scrap_announcements():
 
 
 if __name__ == '__main__':
+    parser = ArgumentParser()
+    parser.add_argument('--stdout', action='store_true')
+    args = parser.parse_args()
+
     state = State(default=dict(urls=[]))
     try:
         blocks = []
@@ -66,7 +68,14 @@ if __name__ == '__main__':
         if blocks:
             message = '<b>Binance Announcements</b>\n\n'
             message += '\n\n'.join(blocks)
-            telegram_notify(text=message, parse_mode='HTML', disable_web_page_preview=True)
+
+            if args.stdout:
+                print(message)
+            else:
+                telegram_notify(text=message, parse_mode='HTML', disable_web_page_preview=True)
 
     except:
-        telegram_notify(text='error: ' + escape(traceback.format_exc()), parse_mode='HTML')
+        if args.stdout:
+            traceback.print_exc()
+        else:
+            telegram_notify(text='error: ' + escape(traceback.format_exc()), parse_mode='HTML')
