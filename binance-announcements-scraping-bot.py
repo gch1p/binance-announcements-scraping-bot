@@ -61,13 +61,12 @@ if __name__ == '__main__':
                     state['urls'].append(item['link'])
 
             if updates:
-                buf = f"<b>{category['title']}</b>\n"
+                buf = f"<b>Binance: {category['title']}</b>\n"
                 buf += '\n'.join(list(map(lambda item: f"<a href='{item['link']}'>{item['text']}</a>", updates)))
                 blocks.append(buf)
 
         if blocks:
-            message = '<b>Binance Announcements</b>\n\n'
-            message += '\n\n'.join(blocks)
+            message = '\n\n'.join(blocks)
 
             if args.stdout:
                 print(message)
